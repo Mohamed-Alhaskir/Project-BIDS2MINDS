@@ -60,7 +60,6 @@ class BIDS2MINDS(BIDS):
                         else:
                             DatasetDOI = ""
                         if 'Authors' in element[key].keys():
-                            contributor = element[key]['Authors']
                             for x in element[key]['Authors']:
                                 main_contact = element[key]['Authors'][0]
                                 custodian = element[key]['Authors'][-1]
@@ -76,25 +75,24 @@ class BIDS2MINDS(BIDS):
                                    description=str([Acknowledgements]),
                                    main_file_bundle=[{'@id': 'main filebundle.json'}],
                                    method=self.data_set_metods, publication=[{'@id': 'Publication.json'}],
-                                   contributor=[{'@id': '%s.json' % contributor}],
                                    custodian=[{'@id': '%s.json' % custodian}],
                                    main_contact=[{'@id': '%s.json' % main_contact}],
-                                   project=[{'@id': 'coordinator.json'}])
-                    g.create_block(blocktemp=g.Person, id=custodian, name='custodian',
-                                   contributor=[{'@id': '%s.json' % contributor}],
+                                   species = [{'@id': 'species.json'}],identifier= 'ds001' )
+                    g.create_block(blocktemp=g.Person, id=custodian, name= custodian,
                                    main_contact=[{'@id': '%s.json' % main_contact}],
-                                   coordinator=[{'@id': '%s.json' % 'coordinator'}])
-                    g.create_block(blocktemp=g.Person, id=str(contributor), name='contributor',
-                                   custodian=[{'@id': '%s.json' % custodian}],
-                                   main_contact=[{'@id': '%s.json' % main_contact}],
-                                   coordinator=[{'@id': '%s.json' % 'coordinator'}])
-                    g.create_block(blocktemp=g.Person, id=main_contact, name='main_contact',
-                                   custodian=[{'@id': '%s.json' % custodian}],
-                                   contributor=[{'@id': '%s.json' % contributor}],
-                                   coordinator=[{'@id': '%s.json' % 'coordinator'}])
-                    g.create_block(blocktemp=g.Fundinginformation, id='funding', name=str(Funding))
+                                   custodian=[{'@id': 'ds001.json'}], family_name = custodian.rsplit(None)[-1],
+                                   given_name=custodian.rsplit(None)[0],identifier ='cus')
+                    g.create_block(blocktemp=g.Person, id=main_contact, name= main_contact,
+                                   family_name = main_contact.rsplit(None)[-1],given_name=main_contact.rsplit(None)[0],
+                                   custodian=[{'@id': '%s.json' % custodian}], main_contact =[{'@id': 'ds001.json'}], identifier ='mc' )
+                    g.create_block(blocktemp=g.Fundinginformation, id='funding', name=str(Funding),
+                                   funding_information = [{'@id': 'ds001.json'}],
+                                   identifier= 'FI')
                     g.create_block(blocktemp=g.Publication, id='publication-01', url=str(ReferencesAndLinks),
-                                   publication=[{'@id': 'ds001.json'}])
+                                   publication=[{'@id': 'ds001.json'}], identifier = 'Pub')
+                    species = {'__block_id': 'uniminds/options/species/v1.0.0', '__block_label': 'species',
+                                '@id': 'species', '@type': 'https://schema.hbp.eu/uniminds/options/species/v1.0.0',
+                                'name': 'Homo sapiens', 'Identifier': 'HS', 'species': [{'@id':'ds001'}]}
                     DOI_dict = {'__block_id': 'uniminds/options/doi/v1.0.0', '__block_label': 'doi',
                                 '@id': 'doi', '@type': 'https://schema.hbp.eu/uniminds/options/doi/v1.0.0',
                                 'citation': HowToAcknowledge, 'identifier': DatasetDOI}
@@ -113,8 +111,7 @@ class BIDS2MINDS(BIDS):
                                     '@type': 'https://schema.hbp.eu/uniminds/options/license/v1.0.0',
                                     'identifier': License, 'fullname': fullname, 'url': 'https://creativecommons.org/'}
                     # todo: check what is missing from last two blocks
-                    g.new_minds_collection['minds_blocks'].append(DOI_dict)
-                    g.new_minds_collection['minds_blocks'].append(License_dict)
+                    g.new_minds_collection['minds_blocks'].extend((DOI_dict,species,License_dict))
                     for block in g.new_minds_collection['minds_blocks']:
                         if block['@id'] == '.json':
                             g.new_minds_collection['minds_blocks'].remove(block)
@@ -468,6 +465,7 @@ class BIDS2MINDS(BIDS):
                        description='This filebundle contains all dataset URLs', name='main filebundle',
                        url=str(self.list_files))
         pprint.pprint(g.new_minds_collection)
+        print(custodian.rsplit(None))
 
 
 p = BIDS2MINDS(folderpath="C:/Users/Asus T102 H/Desktop/ds001")
