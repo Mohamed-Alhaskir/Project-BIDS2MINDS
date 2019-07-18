@@ -1,8 +1,7 @@
 from BIDS import *
 import sys
-sys.path.append('..\\MINDS4PY')
-from MINDS4PY import *
-import pprint
+sys.path.append('C:\\Users\\Asus T102 H\\PycharmProjects\\Project-MINDS4PY')
+from MINDS4PY.MINDS4PY import *
 
 
 class BIDS2MINDS(BIDS):
@@ -77,22 +76,23 @@ class BIDS2MINDS(BIDS):
                                    method=self.data_set_metods, publication=[{'@id': 'Publication.json'}],
                                    custodian=[{'@id': '%s.json' % custodian}],
                                    main_contact=[{'@id': '%s.json' % main_contact}],
-                                   species = [{'@id': 'species.json'}],identifier= 'ds001' )
-                    g.create_block(blocktemp=g.Person, id=custodian, name= custodian,
+                                   species=[{'@id': 'species.json'}], identifier='ds001')
+                    g.create_block(blocktemp=g.Person, id=custodian, name=custodian,
                                    main_contact=[{'@id': '%s.json' % main_contact}],
-                                   custodian=[{'@id': 'ds001.json'}], family_name = custodian.rsplit(None)[-1],
-                                   given_name=custodian.rsplit(None)[0],identifier ='cus')
-                    g.create_block(blocktemp=g.Person, id=main_contact, name= main_contact,
-                                   family_name = main_contact.rsplit(None)[-1],given_name=main_contact.rsplit(None)[0],
-                                   custodian=[{'@id': '%s.json' % custodian}], main_contact =[{'@id': 'ds001.json'}], identifier ='mc' )
+                                   custodian=[{'@id': 'ds001.json'}], family_name=custodian.rsplit(None)[-1],
+                                   given_name=custodian.rsplit(None)[0], identifier='cus')
+                    g.create_block(blocktemp=g.Person, id=main_contact, name=main_contact,
+                                   family_name=main_contact.rsplit(None)[-1], given_name=main_contact.rsplit(None)[0],
+                                   custodian=[{'@id': '%s.json' % custodian}], main_contact=[{'@id': 'ds001.json'}],
+                                   identifier='mc')
                     g.create_block(blocktemp=g.Fundinginformation, id='funding', name=str(Funding),
-                                   funding_information = [{'@id': 'ds001.json'}],
-                                   identifier= 'FI')
+                                   funding_information=[{'@id': 'ds001.json'}],
+                                   identifier='FI')
                     g.create_block(blocktemp=g.Publication, id='publication-01', url=str(ReferencesAndLinks),
-                                   publication=[{'@id': 'ds001.json'}], identifier = 'Pub')
+                                   publication=[{'@id': 'ds001.json'}], identifier='Pub')
                     species = {'__block_id': 'uniminds/options/species/v1.0.0', '__block_label': 'species',
-                                '@id': 'species', '@type': 'https://schema.hbp.eu/uniminds/options/species/v1.0.0',
-                                'name': 'Homo sapiens', 'Identifier': 'HS', 'species': [{'@id':'ds001'}]}
+                               '@id': 'species', '@type': 'https://schema.hbp.eu/uniminds/options/species/v1.0.0',
+                               'name': 'Homo sapiens', 'Identifier': 'HS', 'species': [{'@id': 'ds001'}]}
                     DOI_dict = {'__block_id': 'uniminds/options/doi/v1.0.0', '__block_label': 'doi',
                                 '@id': 'doi', '@type': 'https://schema.hbp.eu/uniminds/options/doi/v1.0.0',
                                 'citation': HowToAcknowledge, 'identifier': DatasetDOI}
@@ -110,8 +110,7 @@ class BIDS2MINDS(BIDS):
                                     '@id': License,
                                     '@type': 'https://schema.hbp.eu/uniminds/options/license/v1.0.0',
                                     'identifier': License, 'fullname': fullname, 'url': 'https://creativecommons.org/'}
-                    # todo: check what is missing from last two blocks
-                    g.new_minds_collection['minds_blocks'].extend((DOI_dict,species,License_dict))
+                    g.new_minds_collection['minds_blocks'].extend((DOI_dict, species, License_dict))
                     for block in g.new_minds_collection['minds_blocks']:
                         if block['@id'] == '.json':
                             g.new_minds_collection['minds_blocks'].remove(block)
@@ -464,9 +463,7 @@ class BIDS2MINDS(BIDS):
         g.create_block(blocktemp=g.Filebundle, id='main filebundle',
                        description='This filebundle contains all dataset URLs', name='main filebundle',
                        url=str(self.list_files))
-        pprint.pprint(g.new_minds_collection)
-        print(custodian.rsplit(None))
-
+        print(g.new_minds_collection)
 
 p = BIDS2MINDS(folderpath="C:/Users/Asus T102 H/Desktop/ds001")
 p.mindify(data_set_name='ds001', location="C:/Users/Asus T102 H/Desktop/trail")
