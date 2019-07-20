@@ -1,0 +1,6 @@
+
+BIDS2MINDS's Documentation
+======================================
+
+.. toctree::
+   :maxdepth: 2

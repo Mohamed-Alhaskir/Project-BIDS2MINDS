@@ -1,21 +1,33 @@
 """
-
+Created on 01 August 2019
+@author: Mohamed Alhaskir
 """
 import json, csv, os
+
 class BIDS:
     """
-
+    This class will convert all forms of metadata in the BIDS dataset in one nested dict (metalist)
+    -task metadata is not included in the metalist-
+    :param folderpath: is the path to the BIDS dataset
+    :type folderpath: string
     """
-
     def __init__(self, folderpath):
         self.folderpath = folderpath
-        self.metalist = []
         self.subslist = []
+        #a list that contains lists for every subject file name separated with commas
         self.subsmetalist = []
+        # a list contains dicts for every subject file name as nested dicts (subsmetalist is part of true_list)
         self.truelist = []
+        # a list contains dicts for every entry of the participants.tsv file with a data(key) that has according
+        # subsmetalist element as value
+        self.metalist = []
+        # a list that contains dictionaries for avaiable metdata
         self.task_list = []
+        # a list contains dicts of each task with its according metdata
         self.list_files = []
+        # list of all URL of the dataset  files
         self.data_set_metods= []
+        # list contains @ids of a all method of the dataset
         for path, dirs, files in os.walk(self.folderpath):
             for filename in files:
                 self.a = filename.replace('_', '.').split('.')
@@ -116,3 +128,5 @@ class BIDS:
                                                     with open(fullpath, 'r') as jsonfile:
                                                         datastore = json.load(jsonfile)
                                                     item[key][kkey].append(datastore)
+
+

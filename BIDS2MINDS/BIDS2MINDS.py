@@ -2,12 +2,12 @@
 Created on 01 August 2019
 @author: Mohamed Alhaskir
 """
-
-from BIDS import *
 import sys
+from BIDS import *
 sys.path.append('C:\\Users\\Asus T102 H\\PycharmProjects\\Project-MINDS4PY')
 from MINDS4PY.MINDS4PY import *
 from pprint import pprint
+
 class BIDS2MINDS(BIDS):
     '''
     The class BIDS2MINDS inherits the __init__ function of the BIDS.BIDS class
@@ -19,9 +19,10 @@ class BIDS2MINDS(BIDS):
         The method mindify calls MINDS2PY.MINDS class
         :param data_set_name: The name of the BIDS standardized dataset
         :type data_set_name: str
-        :param location: path to save MINDS metdata repository
+        :param location: path to save MINDS graph repository
         :type location: str
-        :return
+        :return self.graph: BIDS dataset metadata will be returned in form of MINDS graph
+        :type self.grapf: dict
         """
         self.g = MINDS(name=data_set_name, path=location)
         set_of_method = []
@@ -476,13 +477,20 @@ class BIDS2MINDS(BIDS):
         self.g.create_block(blocktemp=self.g.Filebundle, id='main filebundle',
                        description='This filebundle contains all dataset URLs', name='main filebundle',
                        url=str(self.list_files))
-        self.graph = pprint(self.g.new_minds_collection)
+        self.graph = self.g.new_minds_collection
     def save_minds(self, graph):
+        """
+        call the (save_minds_collection) method of the MINDS4PY.MINDS class; save the graph in MINDS
+        standard repository structure.
+        :param graph: the to be saved graph.
+        :type graph: dict
+        """
         self.g.save_minds_collection(graph)
 
 
-p = BIDS2MINDS(folderpath="C:/Users/Asus T102 H/Desktop/ds001")
-c = p.mindify(data_set_name='ds001', location="C:/Users/Asus T102 H/Desktop/trail")
-p.graph
-p.save_minds(p.graph)
+
+#p = BIDS2MINDS(folderpath="C:/Users/Asus T102 H/Desktop/ds001")
+#c = p.mindify(data_set_name='ds001', location="C:/Users/Asus T102 H/Desktop/trail")
+#p.graph
+#p.save_minds(p.graph)
 
