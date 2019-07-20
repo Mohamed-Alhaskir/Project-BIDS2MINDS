@@ -1,15 +1,13 @@
-.. BIDS2MINDS documentation master file, created by
-   sphinx-quickstart on Thu Jul 18 10:55:58 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to BIDS2MINDS's documentation!
+BIDS2MINDS's Documentation
 ======================================
+
+.. automodule::BIDS2MINDS
+
+.. autoclass:: BIDS
+    :members:
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
-
 
 Indices and tables
 ==================

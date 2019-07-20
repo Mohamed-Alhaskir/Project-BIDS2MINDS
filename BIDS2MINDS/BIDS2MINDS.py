@@ -1,16 +1,29 @@
+"""
+Created on 01 August 2019
+@author: Mohamed Alhaskir
+"""
+
 from BIDS import *
 import sys
 sys.path.append('C:\\Users\\Asus T102 H\\PycharmProjects\\Project-MINDS4PY')
 from MINDS4PY.MINDS4PY import *
-
-
+from pprint import pprint
 class BIDS2MINDS(BIDS):
-
+    '''
+    The class BIDS2MINDS inherits the __init__ function of the BIDS.BIDS class
+    '''
     def __init__(self, folderpath):
         BIDS.__init__(self, folderpath)
-
     def mindify(self, data_set_name, location):
-        g = MINDS(name='myminds', path=location)
+        """
+        The method mindify calls MINDS2PY.MINDS class
+        :param data_set_name: The name of the BIDS standardized dataset
+        :type data_set_name: str
+        :param location: path to save MINDS metdata repository
+        :type location: str
+        :return
+        """
+        self.g = MINDS(name=data_set_name, path=location)
         set_of_method = []
         for path, dirs, files in os.walk(self.folderpath):
             if 'func' in dirs:
@@ -67,7 +80,7 @@ class BIDS2MINDS(BIDS):
                             main_contact = ""
                             custodian = ""
                             contributor = ""
-                    g.create_block(blocktemp=g.Dataset, id=data_set_name, name=data_set_name,
+                    self.g.create_block(blocktemp=self.g.Dataset, id=data_set_name, name=data_set_name,
                                    license=[{'@id': '%s.json' % License}],
                                    funding_information=[{'@id': '%s.json' % 'funding'}],
                                    doi=[{'@id': '%s.json' % 'doi'}],
@@ -77,18 +90,18 @@ class BIDS2MINDS(BIDS):
                                    custodian=[{'@id': '%s.json' % custodian}],
                                    main_contact=[{'@id': '%s.json' % main_contact}],
                                    species=[{'@id': 'species.json'}], identifier='ds001')
-                    g.create_block(blocktemp=g.Person, id=custodian, name=custodian,
+                    self.g.create_block(blocktemp=self.g.Person, id=custodian, name=custodian,
                                    main_contact=[{'@id': '%s.json' % main_contact}],
                                    custodian=[{'@id': 'ds001.json'}], family_name=custodian.rsplit(None)[-1],
                                    given_name=custodian.rsplit(None)[0], identifier='cus')
-                    g.create_block(blocktemp=g.Person, id=main_contact, name=main_contact,
+                    self.g.create_block(blocktemp=self.g.Person, id=main_contact, name=main_contact,
                                    family_name=main_contact.rsplit(None)[-1], given_name=main_contact.rsplit(None)[0],
                                    custodian=[{'@id': '%s.json' % custodian}], main_contact=[{'@id': 'ds001.json'}],
                                    identifier='mc')
-                    g.create_block(blocktemp=g.Fundinginformation, id='funding', name=str(Funding),
+                    self.g.create_block(blocktemp=self.g.Fundinginformation, id='funding', name=str(Funding),
                                    funding_information=[{'@id': 'ds001.json'}],
                                    identifier='FI')
-                    g.create_block(blocktemp=g.Publication, id='publication-01', url=str(ReferencesAndLinks),
+                    self.g.create_block(blocktemp=self.g.Publication, id='publication-01', url=str(ReferencesAndLinks),
                                    publication=[{'@id': 'ds001.json'}], identifier='Pub')
                     species = {'__block_id': 'uniminds/options/species/v1.0.0', '__block_label': 'species',
                                '@id': 'species', '@type': 'https://schema.hbp.eu/uniminds/options/species/v1.0.0',
@@ -110,10 +123,10 @@ class BIDS2MINDS(BIDS):
                                     '@id': License,
                                     '@type': 'https://schema.hbp.eu/uniminds/options/license/v1.0.0',
                                     'identifier': License, 'fullname': fullname, 'url': 'https://creativecommons.org/'}
-                    g.new_minds_collection['minds_blocks'].extend((DOI_dict, species, License_dict))
-                    for block in g.new_minds_collection['minds_blocks']:
+                    self.g.new_minds_collection['minds_blocks'].extend((DOI_dict, species, License_dict))
+                    for block in self.g.new_minds_collection['minds_blocks']:
                         if block['@id'] == '.json':
-                            g.new_minds_collection['minds_blocks'].remove(block)
+                            self.g.new_minds_collection['minds_blocks'].remove(block)
                         for key in block.keys():
                             if type(block[key]) == list:
                                 for x in block[key]:
@@ -185,7 +198,7 @@ class BIDS2MINDS(BIDS):
                                                 'participant_id'] + '/' + var + '/anat/' + element[
                                                       'participant_id'] + '_' + var + '_' + '.'.join(x[key][var])
                                             self.list_files.append(url)
-                                            g.create_block(blocktemp=g.File, id=file_id,
+                                            self.g.create_block(blocktemp=self.g.File, id=file_id,
                                                            subject=[{'@id': '%s.json' % element['participant_id']}],
                                                            url=url, name=file_name,
                                                            method=[{'@id': '%s.json' % something}])
@@ -211,7 +224,7 @@ class BIDS2MINDS(BIDS):
                                                     run) + '_' + '.'.join(
                                                     x[key][var][y][1:])
                                                 self.list_files.append(url)
-                                                g.create_block(blocktemp=g.File, id=file_id,
+                                                self.g.create_block(blocktemp=self.g.File, id=file_id,
                                                                subject=[{'@id': '%s.json' % element['participant_id']}],
                                                                method=[{'@id': 'fMRI-01.json'}],
                                                                url=url, name=file_name)
@@ -239,7 +252,7 @@ class BIDS2MINDS(BIDS):
                                                           'participant_id'] + '_' + var + '_' + y + '_' + ''.join(
                                                     crun) + '_' + '.'.join(filenamelist)
                                                 self.list_files.append(url)
-                                                g.create_block(blocktemp=g.File, id=file_id,
+                                                self.g.create_block(blocktemp=self.g.File, id=file_id,
                                                                subject=[{'@id': element['participant_id']}],
                                                                method=[{'@id': 'fMRI-01.json'}],
                                                                url=url, name=file_name)
@@ -260,7 +273,7 @@ class BIDS2MINDS(BIDS):
                                     'participant_id'] + '_' + var + '_' + ''.join(run) + '_' + '.'.join(
                                     x[key][var][1:])
                                 self.list_files.append(url)
-                                g.create_block(blocktemp=g.File, id=file_id,
+                                self.g.create_block(blocktemp=self.g.File, id=file_id,
                                                subject=[{'@id': '%s.json' % element['participant_id']}],
                                                method=[{'@id': 'fMRI-01.json'}],
                                                url=url, name=file_name)
@@ -285,7 +298,7 @@ class BIDS2MINDS(BIDS):
                                     'participant_id'] + '_' + var + '_' + ''.join(
                                     crun) + '_' + '.'.join(filenamelist)
                                 self.list_files.append(url)
-                                g.create_block(blocktemp=g.File, id=file_id,
+                                self.g.create_block(blocktemp=self.g.File, id=file_id,
                                                subject=[{'@id': '%s.json' % element['participant_id']}],
                                                method=[{'@id': 'fMRI-01.json'}],
                                                url=url, name=file_name)
@@ -300,7 +313,7 @@ class BIDS2MINDS(BIDS):
                                     url = self.folderpath + '/' + element['participant_id'] + '/anat/' + element[
                                         'participant_id'] + '_' + '.'.join(x[key])
                                     self.list_files.append(url)
-                                    g.create_block(blocktemp=g.File, id=file_id,
+                                    self.g.create_block(blocktemp=self.g.File, id=file_id,
                                                    subject=[{'@id': '%s.json' % element['participant_id']}], url=url,
                                                    name=file_name, method=[{'@id': '%s.json' % var}])
 
@@ -315,8 +328,8 @@ class BIDS2MINDS(BIDS):
                     dic = {}
                     dic['@id'] = '%s.json' % element
                     file_list.append(dic)
-            g.create_block(blocktemp=g.Subject, id=participant_id)
-            g.create_block(blocktemp=g.Subject, id=participant_id,
+            self.g.create_block(blocktemp=self.g.Subject, id=participant_id)
+            self.g.create_block(blocktemp=self.g.Subject, id=participant_id,
                            age=age_unit, sex=[{'@id': '%s.json' % sex}],
                            age_category=[{'@id': '%s.json' % age_category}],
                            handedness=[{'@id': '%s.json' % handedness}], subject=file_list, )
@@ -325,12 +338,12 @@ class BIDS2MINDS(BIDS):
                 age_category_dict = {'@id': '%s.json' % element, '__block_label': 'Age_category',
                                      '@type': 'https://schema.hbp.eu/uniminds/options/Age_category/v1.0.0',
                                      '__block_id': 'uniminds/options/age_category/v1.0.0', 'Name': element}
-                g.new_minds_collection['minds_blocks'].append(age_category_dict)
+                self.g.new_minds_collection['minds_blocks'].append(age_category_dict)
             elif element == 'adult':
                 age_category_dict = {'@id': '%s.json' % element, '__block_label': 'Age_category',
                                      '@type': 'https://schema.hbp.eu/uniminds/options/Age_category/v1.0.0',
                                      '__block_id': 'uniminds/options/age_category/v1.0.0', 'Name': element}
-                g.new_minds_collection['minds_blocks'].append(age_category_dict)
+                self.g.new_minds_collection['minds_blocks'].append(age_category_dict)
             else:
                 continue
         for element in set(sex_list):
@@ -339,13 +352,13 @@ class BIDS2MINDS(BIDS):
                             '__block_label': 'Sex',
                             '__block_id': 'uniminds/options/sex/v1.0.0', 'Name': 'Male',
                             "Description": "sex of the participant"}
-                g.new_minds_collection['minds_blocks'].append(sex_dict)
+                self.g.new_minds_collection['minds_blocks'].append(sex_dict)
             elif element == "F":
                 sex_dict = {'@id': '%s.json' % element, '@type': 'https://schema.hbp.eu/uniminds/options/Sex/v1.0.0',
                             '__block_label': 'Sex',
                             '__block_id': 'uniminds/options/sex/v1.0.0', 'Name': 'Female',
                             "Description": "sex of the participant"}
-                g.new_minds_collection['minds_blocks'].append(sex_dict)
+                self.g.new_minds_collection['minds_blocks'].append(sex_dict)
             else:
                 continue
         for element in set(handedness_list):
@@ -355,14 +368,14 @@ class BIDS2MINDS(BIDS):
                                    '__block_label': 'Handness',
                                    '__block_id': 'uniminds/options/handedness/v1.0.0', 'Name': 'Left',
                                    "Description": "handedness of the participant as reported by the participant"}
-                g.new_minds_collection['minds_blocks'].append(handedness_dict)
+                self.g.new_minds_collection['minds_blocks'].append(handedness_dict)
             elif element == "R":
                 handedness_dict = {'@id': '%s.json' % element,
                                    '@type': 'https://schema.hbp.eu/uniminds/options/Handness/v1.0.0',
                                    '__block_label': 'Handness',
                                    '__block_id': 'uniminds/options/handedness/v1.0.0', 'Name': 'Right',
                                    "Description": "handedness of the participant as reported by the participant"}
-                g.new_minds_collection['minds_blocks'].append(handedness_dict)
+                self.g.new_minds_collection['minds_blocks'].append(handedness_dict)
             else:
                 continue
         for element in set(group_list):
@@ -392,7 +405,7 @@ class BIDS2MINDS(BIDS):
                     if xelement['handedness'] == 'R':
                         hand = {'@id': 'R.json'}
                         handlist.append(hand)
-            g.create_block(blocktemp=g.Subjectgroup, id=element, subjects=ids, age_category=age_cata, sex=selist,
+            self.g.create_block(blocktemp=self.g.Subjectgroup, id=element, subjects=ids, age_category=age_cata, sex=selist,
                            handedness=handlist)
         method_id = []
         for element in sub_MRI:
@@ -412,7 +425,7 @@ class BIDS2MINDS(BIDS):
                     dic = {}
                     dic['@id'] = '%s.json' % x
                     method.append(dic)
-            g.create_block(blocktemp=g.Method, id=element, method=method)
+            self.g.create_block(blocktemp=self.g.Method, id=element, method=method)
         method_fMRI = []
         for element in sub_fMRI:
             dic = {'@id': '%s.json' % element}
@@ -420,12 +433,12 @@ class BIDS2MINDS(BIDS):
         for path, dirs, files in os.walk(self.folderpath):
             if 'func' in dirs:
                 fmri_id = 'fMRI-01'
-                g.create_block(blocktemp=g.Method, id=fmri_id,
+                self.g.create_block(blocktemp=self.g.Method, id=fmri_id,
                                description='This the is main MRI method block connected to all other fMRI files',
                                method=method_fMRI)
             if 'anat' in dirs:
                 mri_id = 'MRI-01'
-                g.create_block(blocktemp=g.Method, id=mri_id,
+                self.g.create_block(blocktemp=self.g.Method, id=mri_id,
                                description='This the is main MRI method block connected to all other MRI files',
                                method=[{'@id': '%s.json' % data_set_name}], sub_method=sub_method_id)
                 break
@@ -456,14 +469,20 @@ class BIDS2MINDS(BIDS):
                     if key in element:
                         fdic = {'@id': '%s.json' % element}
                         flist.append(fdic)
-            g.create_block(blocktemp=g.Method, id=key, identifier=identifier, name=TaskName, method=flist,
+            self.g.create_block(blocktemp=self.g.Method, id=key, identifier=identifier, name=TaskName, method=flist,
                            description=descrip + Instructions + RepetitionTime,
                            publication=[{'@id': '%s-Pub.json' % key}])
-            g.create_block(blocktemp=g.Publication, id=key + '-Pub', identifier=CogAtlasID + ' ' + key, url=CogAtlasID)
-        g.create_block(blocktemp=g.Filebundle, id='main filebundle',
+            self.g.create_block(blocktemp=self.g.Publication, id=key + '-Pub', identifier=CogAtlasID + ' ' + key, url=CogAtlasID)
+        self.g.create_block(blocktemp=self.g.Filebundle, id='main filebundle',
                        description='This filebundle contains all dataset URLs', name='main filebundle',
                        url=str(self.list_files))
-        print(g.new_minds_collection)
+        self.graph = pprint(self.g.new_minds_collection)
+    def save_minds(self, graph):
+        self.g.save_minds_collection(graph)
+
 
 p = BIDS2MINDS(folderpath="C:/Users/Asus T102 H/Desktop/ds001")
-p.mindify(data_set_name='ds001', location="C:/Users/Asus T102 H/Desktop/trail")
+c = p.mindify(data_set_name='ds001', location="C:/Users/Asus T102 H/Desktop/trail")
+p.graph
+p.save_minds(p.graph)
+

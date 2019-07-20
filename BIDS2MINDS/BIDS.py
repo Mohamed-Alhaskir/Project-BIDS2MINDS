@@ -1,7 +1,12 @@
+"""
+
+"""
 import json, csv, os
-
-
 class BIDS:
+    """
+
+    """
+
     def __init__(self, folderpath):
         self.folderpath = folderpath
         self.metalist = []
@@ -111,4 +116,3 @@ class BIDS:
                                                     with open(fullpath, 'r') as jsonfile:
                                                         datastore = json.load(jsonfile)
                                                     item[key][kkey].append(datastore)
-
