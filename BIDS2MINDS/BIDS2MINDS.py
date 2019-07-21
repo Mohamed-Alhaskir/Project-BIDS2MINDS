@@ -6,7 +6,6 @@ import sys
 from BIDS import *
 sys.path.append('C:\\Users\\Asus T102 H\\PycharmProjects\\Project-MINDS4PY')
 from MINDS4PY.MINDS4PY import *
-from pprint import pprint
 
 class BIDS2MINDS(BIDS):
     '''

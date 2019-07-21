@@ -13,21 +13,21 @@ class BIDS:
     """
     def __init__(self, folderpath):
         self.folderpath = folderpath
+        # a list that contains lists for every subject file name separated with commas
         self.subslist = []
-        #a list that contains lists for every subject file name separated with commas
+        # a list contains dicts for every subject file name as nested accordingly(subsmetalist is part of true_list)
         self.subsmetalist = []
-        # a list contains dicts for every subject file name as nested dicts (subsmetalist is part of true_list)
-        self.truelist = []
         # a list contains dicts for every entry of the participants.tsv file with a data(key) that has according
         # subsmetalist element as value
-        self.metalist = []
+        self.truelist = []
         # a list that contains dictionaries for avaiable metdata
-        self.task_list = []
+        self.metalist = []
         # a list contains dicts of each task with its according metdata
-        self.list_files = []
+        self.task_list = []
         # list of all URL of the dataset  files
-        self.data_set_metods= []
+        self.list_files = []
         # list contains @ids of a all method of the dataset
+        self.data_set_metods= []
         for path, dirs, files in os.walk(self.folderpath):
             for filename in files:
                 self.a = filename.replace('_', '.').split('.')
@@ -84,6 +84,7 @@ class BIDS:
                 if key.startswith('task'):
                     task_id = {'@id': '%s.json' % key}
                     self.data_set_metods.append(task_id)
+
         for element in self.subslist:
             sub = {}
             if not element[1].startswith('ses') and not element[1].startswith('task'):
