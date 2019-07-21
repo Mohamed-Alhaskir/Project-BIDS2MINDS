@@ -488,8 +488,3 @@ class BIDS2MINDS(BIDS):
 
 
 
-#p = BIDS2MINDS(folderpath="C:/Users/Asus T102 H/Desktop/ds001")
-#c = p.mindify(data_set_name='ds001', location="C:/Users/Asus T102 H/Desktop/trail")
-#p.graph
-#p.save_minds(p.graph)
-
